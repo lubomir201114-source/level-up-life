@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Level Up Life">
+<meta name="theme-color" content="#0a0a14">
+<title>Level Up Life</title>
+<style>
+:root{
+  --bg:#0a0a14;--bg2:#12121f;--card:rgba(28,28,46,.85);--card2:rgba(20,20,40,.8);
+  --line:rgba(110,110,255,.22);--text:#eef0ff;--muted:#8a94bc;
+  --accent:#00c9ff;--primary:#6a11cb;--secondary:#2575fc;
+  --gold:#ffd700;--success:#00c853;--danger:#ff3b5c;--warning:#ffab00;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:var(--bg);color:var(--text);overflow-x:hidden;}
+body{padding-bottom:72px;}
+
+/* ── TOP HEADER ── */
+#appHeader{
+  position:sticky;top:0;z-index:50;
+  background:rgba(10,10,20,.97);border-bottom:1px solid var(--line);
+  backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;gap:10px;
+}
+.app-brand{display:flex;align-items:center;gap:8px;}
+.app-brand .logo{font-size:1.3rem;}
+.app-brand .app-name{font-weight:800;font-size:1rem;background:linear-gradient(90deg,var(--accent),#92fe9d);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.header-right{display:flex;align-items:center;gap:8px;}
+.coins-pill{background:rgba(255,215,0,.12);border:1px solid rgba(255,215,0,.4);border-radius:20px;padding:6px 12px;font-weight:800;font-size:.9rem;color:var(--gold);display:flex;align-items:center;gap:5px;}
+.level-pill{background:rgba(106,17,203,.25);border:1px solid rgba(120,80,255,.4);border-radius:20px;padding:6px 10px;font-size:.78rem;font-weight:700;color:#c4b5ff;}
+
+/* ── BOTTOM NAV ── */
+#bottomNav{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  background:rgba(8,9,18,.98);border-top:1px solid var(--line);
+  backdrop-filter:blur(16px);
+  display:flex;
+}
+.nav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:8px 2px 10px;background:none;border:none;color:var(--muted);
+  font-size:.58rem;font-weight:700;letter-spacing:.3px;cursor:pointer;gap:3px;
+  transition:color .2s;
+}
+.nav-btn .ni{font-size:1.35rem;transition:transform .2s;}
+.nav-btn.active{color:var(--accent);}
+.nav-btn.active .ni{transform:scale(1.2);}
+
+/* ── CONTENT ── */
+.content{max-width:540px;margin:0 auto;padding:14px 14px 10px;}
+
+/* ── CARDS / SECTIONS ── */
+.section{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px;backdrop-filter:blur(8px);}
+.section-title{font-size:1.15rem;font-weight:800;color:var(--accent);margin-bottom:4px;}
+.section-sub{font-size:.8rem;color:var(--muted);margin-bottom:14px;line-height:1.45;}
+.divider{width:40px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--primary),var(--secondary));margin:6px 0 14px;}
+
+/* ── HINT CARD ── */
+.hint{background:rgba(0,201,255,.07);border:1px solid rgba(0,201,255,.18);border-radius:12px;padding:11px 13px;margin-bottom:14px;font-size:.82rem;color:var(--muted);line-height:1.5;}
+.hint strong{color:var(--accent);}
+
+/* ── STREAK HERO ── */
+.streak-hero{background:linear-gradient(135deg,rgba(255,140,0,.18),rgba(255,0,80,.14));border:1px solid rgba(255,140,0,.35);border-radius:20px;padding:22px 18px;text-align:center;margin-bottom:14px;}
+.sh-fire{font-size:2.8rem;margin-bottom:6px;}
+.sh-num{font-size:3.5rem;font-weight:900;background:linear-gradient(90deg,#ff8a00,#ff0080);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1;}
+.sh-label{font-size:.95rem;color:var(--muted);margin-top:4px;}
+.sh-sub{font-size:.8rem;color:var(--warning);margin-top:8px;font-weight:600;}
+
+/* ── TODAY PROGRESS ── */
+.today-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px;}
+.tc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.tc-label{font-size:.85rem;color:var(--muted);font-weight:600;}
+.tc-num{font-size:1.6rem;font-weight:900;color:var(--text);}
+.tc-num span{font-size:1rem;color:var(--muted);font-weight:500;}
+.tc-bar{height:10px;background:rgba(255,255,255,.08);border-radius:6px;overflow:hidden;margin-bottom:8px;}
+.tc-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:6px;transition:width .4s;}
+.tc-cta{font-size:.8rem;color:var(--muted);text-align:center;}
+
+/* ── COACH ── */
+.coach{background:linear-gradient(135deg,rgba(106,17,203,.28),rgba(37,117,252,.16));border:1px solid rgba(120,150,255,.35);}
+.coach-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.coach-av{width:50px;height:50px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#7b5bff,#2575fc);display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;animation:coachPulse 2.6s infinite;flex-shrink:0;}
+@keyframes coachPulse{0%,100%{box-shadow:0 0 12px rgba(91,140,255,.4);}50%{box-shadow:0 0 24px rgba(91,140,255,.8);}}
+.coach-name{font-weight:800;font-size:1rem;color:#cfe0ff;}
+.coach-name small{display:block;font-weight:500;font-size:.7rem;color:var(--muted);}
+.coach-bubble{background:rgba(10,12,26,.7);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:.92rem;line-height:1.55;min-height:52px;margin-bottom:10px;}
+.coach-btns{display:flex;gap:8px;flex-wrap:wrap;}
+.coach-btns button{flex:1;min-width:100px;background:rgba(255,255,255,.07);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 6px;font-size:.8rem;font-weight:600;cursor:pointer;transition:.2s;}
+.coach-btns button:hover{background:var(--secondary);}
+
+/* ── SCHEDULE ── */
+.sched{display:flex;flex-direction:column;gap:7px;}
+.schedrow{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid transparent;border-radius:10px;padding:9px 12px;}
+.schedrow.active{border-color:var(--success);background:rgba(0,200,83,.09);}
+.schedrow.past{opacity:.38;}
+.sched-time{font-size:.72rem;color:var(--accent);font-weight:700;min-width:82px;}
+.sched-block{flex:1;font-size:.82rem;color:var(--text);}
+.sched-icon{font-size:1.1rem;}
+.now-badge{background:var(--success);color:#021a0a;font-size:.6rem;font-weight:800;padding:2px 5px;border-radius:5px;margin-left:4px;}
+
+/* ── QUESTS ── */
+.quests{display:flex;flex-direction:column;gap:10px;}
+.quest{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:14px;padding:14px;position:relative;transition:.2s;}
+.quest.done{opacity:.5;}
+.quest .qt{font-size:.97rem;color:var(--text);font-weight:700;margin-bottom:4px;padding-right:26px;}
+.quest .qd{font-size:.78rem;color:var(--muted);margin-bottom:4px;}
+.quest .qr{font-size:.78rem;color:var(--success);font-weight:700;margin-bottom:10px;}
+.qbtn{width:100%;border:none;border-radius:10px;padding:11px;font-weight:800;cursor:pointer;font-size:.88rem;background:linear-gradient(90deg,var(--primary),var(--secondary));color:#fff;transition:.2s;}
+.qbtn.done{background:var(--success);cursor:default;}
+.xdel{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;padding:2px 6px;}
+.xdel:hover{color:var(--danger);}
+.empty-state{text-align:center;padding:24px 16px;color:var(--muted);}
+.empty-state .es-icon{font-size:2.5rem;margin-bottom:8px;}
+.empty-state .es-title{font-weight:700;color:var(--text);margin-bottom:6px;font-size:.95rem;}
+.empty-state .es-text{font-size:.82rem;line-height:1.5;}
+
+/* ── ADD ROW ── */
+.addrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.addrow input{flex:1;min-width:130px;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:11px 12px;font-size:.88rem;outline:none;}
+.addrow input:focus{border-color:var(--accent);}
+.addrow select{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:11px 8px;font-size:.85rem;outline:none;cursor:pointer;}
+.addbtn{background:linear-gradient(90deg,var(--primary),var(--secondary));color:#fff;border:none;font-weight:800;border-radius:10px;padding:11px 18px;cursor:pointer;font-size:.88rem;white-space:nowrap;}
+
+/* ── LEVEL BAR ── */
+.level-display{text-align:center;margin-bottom:16px;}
+.level-num{font-size:2.6rem;font-weight:900;background:linear-gradient(90deg,#ff8a00,#ff0080);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.lvbar{height:14px;background:rgba(255,255,255,.08);border-radius:8px;overflow:hidden;margin:8px 0 4px;}
+.lvbar i{display:block;height:100%;background:linear-gradient(90deg,#ff8a00,#ff0080);border-radius:8px;transition:width .5s;}
+.lvtext{font-size:.78rem;color:var(--muted);}
+
+/* ── STATS ── */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.stat-card{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center;}
+.stat-card .si{font-size:1.6rem;margin-bottom:6px;}
+.stat-card .sn{font-size:.8rem;color:var(--accent);margin-bottom:4px;font-weight:600;}
+.stat-card .sv{font-size:1.2rem;font-weight:800;margin-bottom:8px;}
+.sbar{height:8px;background:rgba(255,255,255,.08);border-radius:5px;overflow:hidden;}
+.sbar i{display:block;height:100%;border-radius:5px;}
+.s-strength .sbar i{background:linear-gradient(90deg,#ff416c,#ff4b2b);}
+.s-agility .sbar i{background:linear-gradient(90deg,#56ab2f,#a8e063);}
+.s-perception .sbar i{background:linear-gradient(90deg,#2193b0,#6dd5ed);}
+.s-stamina .sbar i{background:linear-gradient(90deg,#834d9b,#d04ed6);}
+.s-intelligence .sbar i{background:linear-gradient(90deg,#00c9ff,#92fe9d);}
+
+/* ── ACHIEVEMENTS ── */
+.achs{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.ach{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center;position:relative;}
+.ach.locked{filter:grayscale(1) brightness(.45);}
+.ach .ai{font-size:2rem;margin-bottom:6px;}
+.ach .at{color:var(--accent);font-size:.85rem;font-weight:700;margin-bottom:4px;}
+.ach .ad{color:var(--muted);font-size:.72rem;}
+.ach-badge{position:absolute;top:8px;right:8px;padding:2px 6px;border-radius:8px;font-size:.62rem;font-weight:800;}
+.ach-badge.locked{background:rgba(0,0,0,.6);color:var(--warning);}
+.ach-badge.unlocked{background:var(--success);color:#021a0a;}
+
+/* ── BUSINESS ── */
+.revenue-hero{text-align:center;padding:18px;background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.25);border-radius:16px;margin-bottom:12px;}
+.rh-amount{font-size:2.4rem;font-weight:900;color:var(--gold);}
+.rh-label{font-size:.8rem;color:var(--muted);margin-top:4px;}
+.biz-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px;}
+.bizcard{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:14px;padding:12px 8px;text-align:center;}
+.bizcard .bv{font-size:1.8rem;font-weight:900;color:var(--accent);}
+.bizcard .bl{font-size:.68rem;color:var(--muted);margin:3px 0 8px;line-height:1.3;}
+.bizcard .badd{width:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));color:#fff;border:none;border-radius:8px;padding:8px 4px;font-size:.72rem;font-weight:700;cursor:pointer;}
+.rev-row{display:flex;gap:8px;margin-bottom:14px;}
+.rev-row input{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,215,0,.3);color:var(--text);border-radius:10px;padding:10px 12px;font-size:.88rem;outline:none;}
+.rev-row input:focus{border-color:var(--gold);}
+.rev-row button{background:linear-gradient(90deg,#ff8a00,#ff4b2b);color:#fff;border:none;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;font-size:.82rem;white-space:nowrap;}
+
+/* ── BOSSES ── */
+.bosses{display:flex;flex-direction:column;gap:10px;}
+.boss{background:rgba(255,255,255,.04);border:2px solid rgba(255,59,92,.3);border-radius:16px;padding:16px;position:relative;}
+.boss.defeated{border-color:rgba(0,200,83,.4);background:rgba(0,200,83,.05);}
+.boss.ready{border-color:var(--gold);animation:bGlow 2s infinite;}
+@keyframes bGlow{0%,100%{box-shadow:0 0 8px rgba(255,215,0,.2);}50%{box-shadow:0 0 20px rgba(255,215,0,.6);}}
+.boss-top{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.boss-icon{font-size:2rem;flex-shrink:0;}
+.boss-info{flex:1;}
+.boss-name{font-weight:800;font-size:.95rem;color:var(--danger);margin-bottom:2px;}
+.boss.defeated .boss-name{color:var(--success);}
+.boss.ready .boss-name{color:var(--gold);}
+.boss-desc{font-size:.78rem;color:var(--muted);line-height:1.4;}
+.boss-reward{font-size:.75rem;color:var(--warning);font-weight:600;margin-bottom:10px;}
+.boss-prog{font-size:.75rem;color:var(--muted);margin-bottom:8px;}
+.boss-beat-badge{position:absolute;top:12px;right:12px;background:var(--success);color:#021a0a;padding:3px 8px;border-radius:8px;font-size:.65rem;font-weight:800;}
+.boss-btn{width:100%;border:none;border-radius:10px;padding:10px;font-weight:800;cursor:pointer;font-size:.85rem;background:linear-gradient(90deg,#ff8a00,#ff0080);color:#fff;}
+.boss-btn.manual{background:rgba(255,255,255,.07);border:1px solid var(--line);color:var(--text);font-weight:600;}
+
+/* ── SHOP ── */
+.coins-hero{text-align:center;padding:18px;background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.25);border-radius:16px;margin-bottom:12px;}
+.ch-num{font-size:2.6rem;font-weight:900;color:var(--gold);}
+.ch-label{font-size:.8rem;color:var(--muted);margin-top:4px;}
+.rewards-grid{display:flex;flex-direction:column;gap:10px;}
+.reward-card{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,215,0,.3);border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px;position:relative;}
+.reward-card .ri{font-size:1.6rem;flex-shrink:0;}
+.reward-card .rinfo{flex:1;}
+.reward-card .rname{font-weight:700;font-size:.9rem;margin-bottom:3px;}
+.reward-card .rprice{color:var(--gold);font-weight:800;font-size:.85rem;}
+.reward-card .rbuy{background:linear-gradient(90deg,#ff8a00,#ff4b2b);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-weight:700;cursor:pointer;font-size:.82rem;flex-shrink:0;}
+
+/* ── PROFILE ── */
+.profile-hero{text-align:center;padding:20px 16px;margin-bottom:14px;}
+.ph-av{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 12px;box-shadow:0 0 20px rgba(106,17,203,.5);}
+.ph-name{font-size:1.3rem;font-weight:800;margin-bottom:4px;}
+.ph-edit{background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:5px 12px;font-size:.75rem;cursor:pointer;margin-top:4px;}
+.ph-edit:hover{color:var(--text);border-color:var(--muted);}
+
+/* ── JOURNEY ── */
+.journey{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.jcard{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center;}
+.jv{font-size:1.4rem;font-weight:800;color:var(--accent);}
+.jl{color:var(--muted);font-size:.72rem;margin-top:4px;line-height:1.3;}
+
+/* ── LOG ── */
+.log{display:flex;flex-direction:column;gap:7px;max-height:220px;overflow-y:auto;}
+.logitem{background:rgba(255,255,255,.04);border-left:3px solid var(--accent);border-radius:8px;padding:9px 11px;font-size:.8rem;display:flex;justify-content:space-between;gap:8px;}
+.logitem .lt{color:var(--muted);font-size:.7rem;white-space:nowrap;}
+
+/* ── SETTINGS ── */
+.settings-row{display:flex;flex-direction:column;gap:8px;}
+.settings-row label{font-size:.8rem;color:var(--muted);font-weight:600;}
+.settings-row select{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px 12px;font-size:.88rem;outline:none;cursor:pointer;}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
+.btn-outline{flex:1;background:none;border:1px solid var(--line);color:var(--muted);border-radius:10px;padding:10px 8px;font-size:.82rem;cursor:pointer;text-align:center;}
+.btn-outline:hover{color:var(--text);border-color:var(--muted);}
+
+/* ── NOTIFICATIONS ── */
+#notifs{position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;width:calc(100% - 28px);max-width:420px;}
+.notif{background:rgba(18,18,30,.97);border-radius:10px;padding:12px 15px;border-left:4px solid var(--accent);font-size:.88rem;animation:slideDown .3s ease,fadeUp .4s ease 3s forwards;backdrop-filter:blur(8px);}
+.notif.success{border-left-color:var(--success);}
+.notif.danger{border-left-color:var(--danger);}
+.notif.gold{border-left-color:var(--gold);}
+@keyframes slideDown{from{opacity:0;transform:translateY(-12px);}to{opacity:1;transform:none;}}
+@keyframes fadeUp{to{opacity:0;transform:translateY(-10px);}}
+
+/* ── FLOAT ANIMATIONS ── */
+.float-text{position:fixed;font-size:1.5rem;font-weight:900;pointer-events:none;z-index:500;transform:translateX(-50%);animation:ftFloat 1.4s ease-out forwards;}
+@keyframes ftFloat{0%{opacity:1;transform:translateX(-50%) translateY(0) scale(1);}30%{opacity:1;transform:translateX(-50%) translateY(-30px) scale(1.3);}100%{opacity:0;transform:translateX(-50%) translateY(-120px) scale(.8);}}
+.screen-flash{position:fixed;inset:0;pointer-events:none;z-index:400;background:rgba(255,215,0,1);opacity:.07;animation:sfFade .5s ease-out forwards;}
+@keyframes sfFade{from{opacity:.07;}to{opacity:0;}}
+@keyframes questBounce{0%{transform:scale(1);}30%{transform:scale(1.04);}60%{transform:scale(.97);}100%{transform:scale(1);}}
+.quest-bounce{animation:questBounce .35s ease;}
+
+/* ── ONBOARDING ── */
+#onboarding{position:fixed;inset:0;z-index:1000;background:#05050f;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center;}
+.ob-fire{font-size:4rem;animation:obPulse 1.5s infinite;}
+@keyframes obPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.12);}}
+.ob-title{font-size:2.1rem;font-weight:900;background:linear-gradient(90deg,#ffd700,#ff8a00);-webkit-background-clip:text;background-clip:text;color:transparent;margin:14px 0 8px;line-height:1.15;}
+.ob-sub{font-size:1rem;color:var(--muted);line-height:1.6;margin-bottom:24px;max-width:300px;}
+.ob-date{font-size:.9rem;color:var(--warning);font-weight:700;margin-bottom:32px;padding:10px 20px;border:1px solid rgba(255,171,0,.4);border-radius:12px;}
+.ob-btn{background:linear-gradient(90deg,#ffd700,#ff8a00);color:#0a0a00;border:none;border-radius:16px;padding:18px 40px;font-size:1.2rem;font-weight:900;cursor:pointer;box-shadow:0 0 30px rgba(255,215,0,.4);transition:transform .2s;}
+.ob-btn:hover{transform:scale(1.04);}
+
+/* ── DAILY SUMMARY ── */
+#dailySummary{position:fixed;inset:0;z-index:900;background:rgba(5,5,15,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center;backdrop-filter:blur(10px);}
+.ds-icon{font-size:3.5rem;margin-bottom:10px;}
+.ds-title{font-size:1.6rem;font-weight:900;color:var(--gold);margin-bottom:6px;}
+.ds-date{font-size:.82rem;color:var(--muted);margin-bottom:20px;}
+.ds-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:300px;margin-bottom:20px;}
+.ds-stat{background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:14px;padding:14px 10px;text-align:center;}
+.ds-stat .dsv{font-size:1.6rem;font-weight:900;color:var(--accent);}
+.ds-stat .dsl{font-size:.72rem;color:var(--muted);margin-top:4px;}
+.ds-msg{font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:24px;max-width:280px;line-height:1.5;}
+.ds-close{background:linear-gradient(90deg,var(--primary),var(--secondary));color:#fff;border:none;border-radius:14px;padding:15px 36px;font-size:1rem;font-weight:800;cursor:pointer;}
+.confetti-piece{position:fixed;width:8px;height:8px;top:-10px;border-radius:2px;animation:cFall linear forwards;z-index:1002;pointer-events:none;}
+@keyframes cFall{0%{transform:translateY(0) rotate(0deg);opacity:1;}100%{transform:translateY(110vh) rotate(720deg);opacity:0;}}
+
+/* ── BIKE BAR ── */
+.bike-bar-wrap{background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.25);border-radius:16px;padding:16px;margin-bottom:12px;}
+.bike-bar-title{font-size:.9rem;font-weight:800;color:var(--gold);margin-bottom:10px;}
+.bike-bar-track{height:14px;background:rgba(255,255,255,.08);border-radius:8px;overflow:hidden;margin-bottom:8px;position:relative;}
+.bike-bar-fill{height:100%;background:linear-gradient(90deg,#ffd700,#ff8a00);border-radius:8px;transition:width .6s ease;position:relative;min-width:0;}
+.bike-bar-glow{position:absolute;right:-1px;top:50%;transform:translateY(-50%);width:14px;height:14px;background:#ffd700;border-radius:50%;box-shadow:0 0 10px #ffd700,0 0 20px rgba(255,215,0,.6);}
+.bike-bar-info{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);}
+.bike-bar-milestone{font-size:.78rem;color:var(--warning);font-weight:700;margin-top:6px;padding:5px 10px;background:rgba(255,171,0,.1);border-radius:8px;text-align:center;}
+
+/* ── MUTE BTN ── */
+.mute-btn{background:none;border:1px solid var(--line);border-radius:10px;padding:5px 9px;font-size:1rem;cursor:pointer;color:var(--text);line-height:1;}
+.mute-btn:hover{border-color:var(--muted);}
+</style>
+</head>
+<body>
+<div id="notifs"></div>
+<div id="appHeader"></div>
+<div id="app" class="content"></div>
+<nav id="bottomNav"></nav>
+
+<script>
+/* ── CONSTANTS ── */
+const KEY='lifeRPGData';
+const STATS=['strength','agility','perception','stamina','intelligence'];
+const STAT_ICON={strength:'💪',agility:'🏃',perception:'👁️',stamina:'❤️',intelligence:'🧠'};
+const DIFF={easy:{xp:10,gain:5,coins:5},medium:{xp:25,gain:10,coins:10},hard:{xp:40,gain:20,coins:20}};
+const ACHS=[{key:'ach1',lvl:5,icon:'🌱'},{key:'ach2',lvl:15,icon:'🔥'},{key:'ach3',lvl:30,icon:'⚔️'},{key:'ach4',lvl:50,icon:'👑'},{key:'ach5',lvl:100,icon:'🏆'}];
+const BOSSES=[
+  {key:'b1',icon:'🗺️',trigger:'demos',val:1},
+  {key:'b2',icon:'💰',trigger:'clients',val:1},
+  {key:'b3',icon:'🔥',trigger:'clients',val:3},
+  {key:'b4',icon:'⚽',trigger:'manual',val:0}
+];
+const SCHEDULE=[
+  {time:'6:00',block:'Підйом, вода, легкий сніданок',icon:'🌅',h:6,m:0,end:6,em:29},
+  {time:'6:30–9:30',block:'Тренування — футбол + фізична підготовка',icon:'⚽',h:6,m:30,end:9,em:29},
+  {time:'9:30–10:30',block:'Душ, повноцінна їжа, відновлення',icon:'🍽️',h:9,m:30,end:10,em:29},
+  {time:'10:30–11:30',block:'Бізнес: перевірка cold caller, follow-up',icon:'📞',h:10,m:30,end:11,em:29},
+  {time:'11:30–13:00',block:'Бізнес: демо-дзвінки / пошук лідів',icon:'💼',h:11,m:30,end:12,em:59},
+  {time:'13:00–14:00',block:'Обід, перерва, без екранів',icon:'🍕',h:13,m:0,end:13,em:59},
+  {time:'14:00–15:30',block:'Бізнес: ліди, офер, клієнти',icon:'🎯',h:14,m:0,end:15,em:29},
+  {time:'15:30–16:00',block:'Підсумок дня',icon:'📝',h:15,m:30,end:15,em:59},
+  {time:'16:00+',block:'Відпочинок, друзі, відновлення',icon:'😎',h:16,m:0,end:22,em:59},
+  {time:'23:00',block:'Сон — мінімум 7 годин',icon:'😴',h:23,m:0,end:23,em:59}
+];
+
+/* ── LANGUAGES ── */
+const LANG={
+en:{
+  appTitle:"Level Up Your Life",appSubtitle:"Turn your real life into a game",start:"Let's Go",
+  levelStats:"Level & Stats",level:"Level",xpProgress:"{cur} / {need} XP to next level",
+  strength:"Strength",agility:"Agility",perception:"Perception",stamina:"Stamina",intelligence:"Intelligence",
+  dailyQuests:"Daily Quests",questPlaceholder:"New quest (e.g. Train 30 min)",trains:"Trains",
+  difficulty:"Difficulty",easy:"Easy",medium:"Medium",hard:"Hard",add:"Add",complete:"Complete ✓",doneBtn:"Done ✓",
+  noQuests:"No quests yet",discipline:"Discipline Streak",
+  disciplineDesc:"Complete ALL daily quests every day to grow your streak.",
+  streakLabel:"day streak",days:"days",
+  disciplineGoal:"{n} / 14 days to become Disciplined",disciplineExpert:"You are Disciplined! 🏆",
+  achievements:"Achievements",locked:"Locked",lvlShort:"lvl",reach:"Reach level {n}",unlocked:"Done!",
+  rewardsShop:"Rewards Shop",rewardsDesc:"Spend your earned coins on real rewards.",
+  rewardPlaceholder:"New reward (e.g. 1hr gaming)",cost:"Cost",buy:"Buy",
+  noRewards:"No rewards yet",activity:"Activity Log",noActivity:"Complete a quest to start!",
+  setName:"Change name",backup:"Save backup",restore:"Load backup",
+  hello:"Hey",friend:"friend",namePrompt:"What's your name?",
+  n_levelup:"LEVEL UP! Now level {n} 🎉",n_quest:"Quest done! +{xp} XP, +{coins} L",
+  n_allDone:"ALL quests done! Streak +1 🔥",n_notEnough:"Not enough coins!",
+  n_bought:"Reward unlocked! 🎁",n_questAdded:"Quest added 💪",n_rewardAdded:"Reward added 🎁",
+  ach1_t:"First Steps",ach2_t:"Committed",ach3_t:"Warrior",ach4_t:"Elite",ach5_t:"Legend",
+  coachLabel:"your coach",coachNameDef:"Nova",coachNamePrompt:"Name your coach:",
+  btnMotivate:"Motivate 💪",btnStatus:"My stats 📊",btnNext:"What next? 🎯",
+  journeyTitle:"Your Journey",jSince:"Playing since",jTotal:"Quests done",jBest:"Best streak",jActive:"Active days",jLockIn:"Lock-In day",
+  cMorning:"Good morning, {name}! ☀️",cAfternoon:"Hey {name}! Let's go. 💪",cEvening:"Good evening, {name}! 🌙",
+  cAllDone:"You crushed ALL quests today. Legendary. 🔥",
+  cTodo:"You still have {n} quest(s) today.",cNoQuests:"Add your first quest below. 👇",
+  cSugStreak:"Keep your {n}-day streak alive!",cSugStart:"Do all quests today to start a streak.",
+  cSugLow:"Train your {stat} — it's your weakest stat.",cSugCoins:"You have {coins} L — claim a reward! 🎁",
+  cSugBiz:"Book a demo today — every call brings you closer to the bike! 📞",
+  cSugDemo:"You have {demos} demos — go close the next client! 💰",
+  cSugClient:"{clients} client(s) closed! Keep scaling! 🔥",
+  cMot1:"Discipline beats motivation, {name}. Show up anyway.",
+  cMot2:"Small steps every day build a whole new life.",
+  cMot3:"Future you is watching. Make them proud. 💪",
+  cMot4:"{name}, the electric bike is waiting. Every quest is one step closer. ⚡",
+  cMot5:"One closed client changes everything, {name}. Keep dialing. 📞",
+  cStat:"Level {lvl} · {total} quests · best streak {best} days. Proud of you, {name}. 📈",
+  cStatBiz:" Business: {clients} clients, {demos} demos, ${revenue} earned.",
+  cNextFinish:"Finish your {n} quest(s) today first! ✅",
+  cNextLow:"Train your {stat} — lowest stat right now. 🎯",cNextAdd:"Add a real task below. 👇",
+  bizTitle:"Business Tracker",bizSub:"Track your AI Receptionist Agency — every demo, client and call",
+  bizDemos:"Demos Booked",bizClients:"Clients Closed",bizCalls:"Calls Made",bizRevenue:"Revenue",
+  bizAddDemo:"+ Demo",bizAddClient:"+ Client",bizAddCalls:"+ 25 Calls",
+  bizAddRevenue:"Record $",bizRevInput:"Amount e.g. 2997",
+  bossTitle:"Summer Bosses",bossSub:"Your 4 big goals for this summer. Defeat them all.",
+  bossDefeated:"DEFEATED!",bossDefeat:"⚔️ DEFEAT",
+  b1_name:"First Demo",b1_desc:"Book your first demo with a roofing company",b1_reward:"Reinvest → Agency website",
+  b2_name:"First Client",b2_desc:"Close your first paying client — $2,997+",b2_reward:"Real money in pocket 💸",
+  b3_name:"3 Clients",b3_desc:"Close 3 clients — now it's a real business",b3_reward:"Bike fund contribution 🏍️",
+  b4_name:"Football Academy",b4_desc:"Get accepted into a top academy by end of summer",b4_reward:"Talaria / Surron Electric Bike ⚡",
+  n_demo:"Demo booked! +{xp} XP 🎯",n_client:"CLIENT CLOSED! +{xp} XP +{coins} L 💰🔥",
+  n_calls:"25 calls logged! +{xp} XP 📞",n_revenue:"${amount} recorded! 💸",n_boss:"BOSS DEFEATED: {name}! 🏆",
+  schedTitle:"Today's Schedule",schedSub:"Your daily Lock-In routine. Green = right now.",schedNow:"NOW",
+  questsSub:"Mark tasks you completed today. Each quest = XP + coins + stat boost.",
+  hintQuests:"<strong>How it works:</strong> Every real task you do in real life becomes a quest. Complete it → tap the button → get XP and coins. Quests reset every day at midnight.",
+  hintBiz:"<strong>How it works:</strong> Every time you book a demo, close a client, or make 25 calls — tap the button. You get bonus XP + coins and it tracks your progress automatically.",
+  hintBoss:"<strong>What are bosses?</strong> Your 4 biggest goals this summer. When you reach the goal (e.g. close 3 clients) — the boss is auto-defeated. Football Academy you mark manually.",
+  hintShop:"<strong>How it works:</strong> Earn coins by completing quests and business tasks. Spend them here on real rewards you set for yourself.",
+  hintStats:"<strong>How stats work:</strong> Each stat grows when you complete quests that train it. Max is 500 points. Strength = training, Intelligence = business/reading, Stamina = recovery & sleep.",
+  tabHome:"Home",tabQuests:"Quests",tabBiz:"Business",tabShop:"Shop",tabProfile:"Profile",
+  shopSub:"Spend your coins on real rewards you set for yourself.",
+  profileSub:"Your hero stats and settings.",langLabel:"Language",settingsTitle:"Settings"
+},
+uk:{
+  appTitle:"Прокачай своє життя",appSubtitle:"Перетвори реальне життя на гру",start:"Поїхали",
+  levelStats:"Рівень і характеристики",level:"Рівень",xpProgress:"{cur} / {need} XP до наступного рівня",
+  strength:"Сила",agility:"Спритність",perception:"Сприйняття",stamina:"Витривалість",intelligence:"Інтелект",
+  dailyQuests:"Щоденні Квести",questPlaceholder:"Новий квест (напр. Тренування 30 хв)",trains:"Тренує",
+  difficulty:"Складність",easy:"Легко",medium:"Середньо",hard:"Важко",add:"Додати",complete:"Виконати ✓",doneBtn:"Готово ✓",
+  noQuests:"Квестів ще немає",discipline:"Серія дисципліни",
+  disciplineDesc:"Виконуй УСІ щоденні квести щодня щоб збільшувати серію.",
+  streakLabel:"день серії",days:"днів",
+  disciplineGoal:"{n} / 14 днів щоб стати Дисциплінованим",disciplineExpert:"Ти Дисциплінований! 🏆",
+  achievements:"Досягнення",locked:"Закрито",lvlShort:"рів",reach:"Досягни рівня {n}",unlocked:"Відкрито!",
+  rewardsShop:"Магазин Нагород",rewardsDesc:"Витрачай зароблені монети на реальні нагороди.",
+  rewardPlaceholder:"Нова нагорода (напр. 1 год ігор)",cost:"Ціна",buy:"Купити",
+  noRewards:"Нагород ще немає",activity:"Журнал активності",noActivity:"Виконай квест щоб почати!",
+  setName:"Змінити ім'я",backup:"Зберегти копію",restore:"Завантажити копію",
+  hello:"Привіт",friend:"друже",namePrompt:"Як тебе звати?",
+  n_levelup:"НОВИЙ РІВЕНЬ! Тепер ти рівень {n} 🎉",n_quest:"Квест виконано! +{xp} XP, +{coins} L",
+  n_allDone:"УСІ квести виконано! Серія +1 🔥",n_notEnough:"Недостатньо монет!",
+  n_bought:"Нагороду відкрито! 🎁",n_questAdded:"Квест додано 💪",n_rewardAdded:"Нагороду додано 🎁",
+  ach1_t:"Перші кроки",ach2_t:"Відданий",ach3_t:"Воїн",ach4_t:"Еліта",ach5_t:"Легенда",
+  coachLabel:"твій коуч",coachNameDef:"Нова",coachNamePrompt:"Назви свого коуча:",
+  btnMotivate:"Мотивуй 💪",btnStatus:"Мій статус 📊",btnNext:"Що далі? 🎯",
+  journeyTitle:"Твій Шлях",jSince:"В грі з",jTotal:"Квестів виконано",jBest:"Найкраща серія",jActive:"Активних днів",jLockIn:"День Lock-In",
+  cMorning:"Доброго ранку, {name}! ☀️",cAfternoon:"Привіт, {name}! Поїхали. 💪",cEvening:"Доброго вечора, {name}! 🌙",
+  cAllDone:"Ти виконав УСІ квести сьогодні. Легендарно. 🔥",
+  cTodo:"Ще {n} квест(ів) на сьогодні.",cNoQuests:"Додай перший квест нижче. 👇",
+  cSugStreak:"Не втрачай серію в {n} днів!",cSugStart:"Виконай усі квести сьогодні щоб почати серію.",
+  cSugLow:"Тренуй {stat} — це твоя найслабша характеристика.",cSugCoins:"У тебе {coins} L — забери нагороду! 🎁",
+  cSugBiz:"Забронюй демо сьогодні — кожен дзвінок наближає тебе до байка! 📞",
+  cSugDemo:"У тебе {demos} демо — іди закривай наступного клієнта! 💰",
+  cSugClient:"{clients} клієнт(ів) закрито! Масштабуйся! 🔥",
+  cMot1:"Дисципліна важливіша за мотивацію, {name}. Дій попри все.",
+  cMot2:"Маленькі кроки щодня будують нове життя.",
+  cMot3:"Майбутній ти спостерігає. Зроби його гордим. 💪",
+  cMot4:"{name}, електробайк чекає. Кожен квест — один крок ближче. ⚡",
+  cMot5:"Один закритий клієнт змінює все, {name}. Дзвони далі. 📞",
+  cStat:"Рівень {lvl} · {total} квестів · найкраща серія {best} днів. Пишаюся тобою, {name}. 📈",
+  cStatBiz:" Бізнес: {clients} клієнт(ів), {demos} демо, ${revenue} доходу.",
+  cNextFinish:"Спочатку заверши {n} квест(ів) на сьогодні! ✅",
+  cNextLow:"Тренуй {stat} — це зараз твоя найслабша характеристика. 🎯",cNextAdd:"Додай реальну справу нижче. 👇",
+  bizTitle:"Бізнес Трекер",bizSub:"Відслідковуй свій AI Receptionist Agency — кожне демо, клієнт і дзвінок",
+  bizDemos:"Демо",bizClients:"Клієнти",bizCalls:"Дзвінки",bizRevenue:"Дохід",
+  bizAddDemo:"+ Демо",bizAddClient:"+ Клієнт",bizAddCalls:"+ 25 Дзвінків",
+  bizAddRevenue:"Записати $",bizRevInput:"Сума, напр. 2997",
+  bossTitle:"Боси Літа",bossSub:"Твої 4 великі цілі на це літо. Перемоги всіх.",
+  bossDefeated:"ПЕРЕМОЖЕНО!",bossDefeat:"⚔️ ПЕРЕМОГТИ",
+  b1_name:"Перше Демо",b1_desc:"Забронюй перше демо з roofing компанією",b1_reward:"Реінвест → вебсайт агенції",
+  b2_name:"Перший Клієнт",b2_desc:"Закрий першого платного клієнта — $2,997+",b2_reward:"Реальні гроші в кишені 💸",
+  b3_name:"3 Клієнти",b3_desc:"Закрий 3 клієнтів — це вже справжній бізнес",b3_reward:"Частина грошей на байк 🏍️",
+  b4_name:"Топ-Академія",b4_desc:"Потрап у топ-футбольну академію до кінця літа",b4_reward:"Talaria / Surron Electric Bike ⚡",
+  n_demo:"Демо заброньовано! +{xp} XP 🎯",n_client:"КЛІЄНТ ЗАКРИТИЙ! +{xp} XP +{coins} L 💰🔥",
+  n_calls:"25 дзвінків! +{xp} XP 📞",n_revenue:"${amount} записано! 💸",n_boss:"БОС ПЕРЕМОЖЕНИЙ: {name}! 🏆",
+  schedTitle:"Розклад сьогодні",schedSub:"Твій щоденний Lock-In розклад. Зелений = зараз.",schedNow:"ЗАРАЗ",
+  questsSub:"Відмічай справи які зробив сьогодні. Кожен квест = XP + монети + прокачка характеристики.",
+  hintQuests:"<strong>Як це працює:</strong> Кожна реальна справа яку ти робиш в житті — це квест. Виконав → натиснув кнопку → отримав XP і монети. Квести скидаються щодня опівночі.",
+  hintBiz:"<strong>Як це працює:</strong> Кожного разу коли бронюєш демо, закриваєш клієнта або робиш 25 дзвінків — натискай кнопку. Отримуєш бонус XP + монети і все автоматично зберігається.",
+  hintBoss:"<strong>Що таке боси?</strong> Твої 4 найбільші цілі на літо. Коли досягаєш цілі (наприклад закрив 3 клієнти) — бос автоматично перемагається. Топ-Академію відмічаєш вручну.",
+  hintShop:"<strong>Як це працює:</strong> Заробляєш монети виконуючи квести і бізнес-задачі. Витрачаєш тут на реальні нагороди які сам собі призначив.",
+  hintStats:"<strong>Як ростуть характеристики:</strong> Кожна характеристика росте коли виконуєш квести які її тренують. Максимум 500 очок. Сила = тренування, Інтелект = бізнес/читання, Витривалість = рекавері і сон.",
+  tabHome:"Головна",tabQuests:"Квести",tabBiz:"Бізнес",tabShop:"Нагороди",tabProfile:"Профіль",
+  shopSub:"Витрачай зароблені монети на реальні нагороди які ти сам собі призначив.",
+  profileSub:"Твої характеристики, досягнення і налаштування.",langLabel:"Мова",settingsTitle:"Налаштування"
+},
+ru:{
+  appTitle:"Прокачай свою жизнь",appSubtitle:"Преврати реальную жизнь в игру",start:"Поехали",
+  levelStats:"Уровень и характеристики",level:"Уровень",xpProgress:"{cur} / {need} XP до следующего уровня",
+  strength:"Сила",agility:"Ловкость",perception:"Восприятие",stamina:"Выносливость",intelligence:"Интеллект",
+  dailyQuests:"Ежедневные квесты",questPlaceholder:"Новый квест (напр. Тренировка 30 мин)",trains:"Тренирует",
+  difficulty:"Сложность",easy:"Легко",medium:"Средне",hard:"Сложно",add:"Добавить",complete:"Выполнить ✓",doneBtn:"Готово ✓",
+  noQuests:"Квестов пока нет",discipline:"Серия дисциплины",disciplineDesc:"Выполняй ВСЕ квесты каждый день.",
+  streakLabel:"день серии",days:"дней",disciplineGoal:"{n} / 14 дней до Дисциплинированного",disciplineExpert:"Ты Дисциплинированный! 🏆",
+  achievements:"Достижения",locked:"Закрыто",lvlShort:"ур",reach:"Достигни уровня {n}",unlocked:"Открыто!",
+  rewardsShop:"Магазин наград",rewardsDesc:"Трать монеты на реальные награды.",
+  rewardPlaceholder:"Новая награда",cost:"Цена",buy:"Купить",noRewards:"Наград пока нет",
+  activity:"Журнал",noActivity:"Выполни квест чтобы начать!",
+  setName:"Изменить имя",backup:"Сохранить копию",restore:"Загрузить копию",
+  hello:"Привет",friend:"друг",namePrompt:"Как тебя зовут?",
+  n_levelup:"НОВЫЙ УРОВЕНЬ! Теперь {n} 🎉",n_quest:"Квест выполнен! +{xp} XP, +{coins} L",
+  n_allDone:"ВСЕ квесты выполнены! Серия +1 🔥",n_notEnough:"Недостаточно монет!",
+  n_bought:"Награда открыта! 🎁",n_questAdded:"Квест добавлен 💪",n_rewardAdded:"Награда добавлена 🎁",
+  ach1_t:"Первые шаги",ach2_t:"Преданный",ach3_t:"Воин",ach4_t:"Элита",ach5_t:"Легенда",
+  coachLabel:"твой коуч",coachNameDef:"Нова",coachNamePrompt:"Назови своего коуча:",
+  btnMotivate:"Мотивируй 💪",btnStatus:"Мой статус 📊",btnNext:"Что дальше? 🎯",
+  journeyTitle:"Твой путь",jSince:"В игре с",jTotal:"Квестов выполнено",jBest:"Лучшая серия",jActive:"Активных дней",jLockIn:"День Lock-In",
+  cMorning:"Доброе утро, {name}! ☀️",cAfternoon:"Привет, {name}! Поехали. 💪",cEvening:"Добрый вечер, {name}! 🌙",
+  cAllDone:"Ты выполнил ВСЕ квесты сегодня. Легендарно. 🔥",cTodo:"Ещё {n} квест(ов) сегодня.",cNoQuests:"Добавь первый квест ниже. 👇",
+  cSugStreak:"Не теряй серию {n} дней!",cSugStart:"Выполни все квесты сегодня.",
+  cSugLow:"Тренируй {stat} — слабейшая характеристика.",cSugCoins:"У тебя {coins} L — забери награду! 🎁",
+  cSugBiz:"Забронируй демо сегодня! 📞",cSugDemo:"Есть {demos} демо — закрой клиента! 💰",cSugClient:"{clients} клиент(ов)! Масштабируйся! 🔥",
+  cMot1:"Дисциплина важнее мотивации, {name}.",cMot2:"Маленькие шаги каждый день строят новую жизнь.",cMot3:"Будущий ты наблюдает. Сделай его гордым. 💪",
+  cMot4:"{name}, байк ждёт. Каждый квест ближе. ⚡",cMot5:"Один клиент меняет всё, {name}. Звони. 📞",
+  cStat:"Уровень {lvl} · {total} квестов · серия {best} дней. Горжусь, {name}. 📈",cStatBiz:" Бизнес: {clients} клиентов, {demos} демо, ${revenue}.",
+  cNextFinish:"Заверши {n} квест(ов) сегодня! ✅",cNextLow:"Тренируй {stat}. 🎯",cNextAdd:"Добавь задачу ниже. 👇",
+  bizTitle:"Бизнес Трекер",bizSub:"Отслеживай свой AI Agency",bizDemos:"Демо",bizClients:"Клиенты",bizCalls:"Звонки",bizRevenue:"Доход",
+  bizAddDemo:"+ Демо",bizAddClient:"+ Клиент",bizAddCalls:"+ 25 Звонков",bizAddRevenue:"Записать $",bizRevInput:"Сумма напр. 2997",
+  bossTitle:"Боссы Лета",bossSub:"4 главные цели на лето.",bossDefeated:"ПОБЕЖДЁН!",bossDefeat:"⚔️ ПОБЕДИТЬ",
+  b1_name:"Первое Демо",b1_desc:"Забронируй первое демо",b1_reward:"Реинвест → сайт агентства",
+  b2_name:"Первый Клиент",b2_desc:"Закрой первого клиента — $2,997+",b2_reward:"Реальные деньги 💸",
+  b3_name:"3 Клиента",b3_desc:"Закрой 3 клиентов",b3_reward:"Часть денег на байк 🏍️",
+  b4_name:"Топ-Академия",b4_desc:"Попади в топ-академию до конца лета",b4_reward:"Talaria / Surron E-Bike ⚡",
+  n_demo:"Демо забронировано! +{xp} XP 🎯",n_client:"КЛИЕНТ ЗАКРЫТ! +{xp} XP +{coins} L 💰🔥",
+  n_calls:"25 звонков! +{xp} XP 📞",n_revenue:"${amount} записано! 💸",n_boss:"БОСС ПОБЕЖДЁН: {name}! 🏆",
+  schedTitle:"Расписание сегодня",schedSub:"Твой Lock-In распорядок. Зелёный = сейчас.",schedNow:"СЕЙЧАС",
+  questsSub:"Отмечай выполненные задачи. Каждый квест = XP + монеты + прокачка.",
+  hintQuests:"<strong>Как это работает:</strong> Каждое реальное дело — это квест. Выполнил → нажал кнопку → получил XP и монеты.",
+  hintBiz:"<strong>Как это работает:</strong> Нажимай кнопки когда бронируешь демо, закрываешь клиента или делаешь 25 звонков.",
+  hintBoss:"<strong>Что такое боссы?</strong> 4 главные цели на лето. Достиг цели — босс побеждён автоматически.",
+  hintShop:"<strong>Как это работает:</strong> Зарабатываешь монеты квестами. Тратишь здесь на реальные награды.",
+  hintStats:"<strong>Как растут характеристики:</strong> Каждая растёт от соответствующих квестов. Максимум 500.",
+  tabHome:"Главная",tabQuests:"Квесты",tabBiz:"Бизнес",tabShop:"Награды",tabProfile:"Профиль",
+  shopSub:"Трать монеты на реальные награды.",profileSub:"Твои характеристики и настройки.",langLabel:"Язык",settingsTitle:"Настройки"
+},
+es:{
+  appTitle:"Sube de nivel tu vida",appSubtitle:"Convierte tu vida real en un juego",start:"Vamos",
+  levelStats:"Nivel y stats",level:"Nivel",xpProgress:"{cur} / {need} XP al siguiente nivel",
+  strength:"Fuerza",agility:"Agilidad",perception:"Percepción",stamina:"Resistencia",intelligence:"Inteligencia",
+  dailyQuests:"Misiones diarias",questPlaceholder:"Nueva misión",trains:"Entrena",
+  difficulty:"Dificultad",easy:"Fácil",medium:"Media",hard:"Difícil",add:"Añadir",complete:"Completar ✓",doneBtn:"Hecho ✓",
+  noQuests:"Sin misiones aún",discipline:"Racha de disciplina",disciplineDesc:"Completa TODAS las misiones cada día.",
+  streakLabel:"días de racha",days:"días",disciplineGoal:"{n} / 14 días para Disciplinado",disciplineExpert:"¡Eres Disciplinado! 🏆",
+  achievements:"Logros",locked:"Bloqueado",lvlShort:"niv",reach:"Nivel {n}",unlocked:"¡Conseguido!",
+  rewardsShop:"Tienda de recompensas",rewardsDesc:"Gasta tus monedas en recompensas reales.",
+  rewardPlaceholder:"Nueva recompensa",cost:"Precio",buy:"Comprar",noRewards:"Sin recompensas aún",
+  activity:"Registro",noActivity:"¡Completa una misión para empezar!",
+  setName:"Cambiar nombre",backup:"Guardar copia",restore:"Cargar copia",
+  hello:"Hola",friend:"amigo",namePrompt:"¿Cómo te llamas?",
+  n_levelup:"¡SUBISTE DE NIVEL! Ahora nivel {n} 🎉",n_quest:"¡Misión completada! +{xp} XP, +{coins} L",
+  n_allDone:"¡TODAS las misiones completadas! Racha +1 🔥",n_notEnough:"¡No hay suficientes monedas!",
+  n_bought:"¡Recompensa desbloqueada! 🎁",n_questAdded:"Misión añadida 💪",n_rewardAdded:"Recompensa añadida 🎁",
+  ach1_t:"Primeros pasos",ach2_t:"Comprometido",ach3_t:"Guerrero",ach4_t:"Élite",ach5_t:"Leyenda",
+  coachLabel:"tu coach",coachNameDef:"Nova",coachNamePrompt:"Nombra tu coach:",
+  btnMotivate:"Motivar 💪",btnStatus:"Mi estado 📊",btnNext:"¿Qué sigue? 🎯",
+  journeyTitle:"Tu camino",jSince:"Jugando desde",jTotal:"Misiones hechas",jBest:"Mejor racha",jActive:"Días activos",jLockIn:"Día Lock-In",
+  cMorning:"¡Buenos días, {name}! ☀️",cAfternoon:"¡Hola, {name}! Vamos. 💪",cEvening:"¡Buenas noches, {name}! 🌙",
+  cAllDone:"¡Completaste TODAS las misiones! Legendario. 🔥",cTodo:"Quedan {n} misión(es) hoy.",cNoQuests:"Añade tu primera misión abajo. 👇",
+  cSugStreak:"¡Mantén tu racha de {n} días!",cSugStart:"Completa todas las misiones hoy.",
+  cSugLow:"Entrena {stat} — tu stat más débil.",cSugCoins:"Tienes {coins} L — ¡reclama una recompensa! 🎁",
+  cSugBiz:"¡Reserva un demo hoy! 📞",cSugDemo:"Tienes {demos} demos — ¡cierra al cliente! 💰",cSugClient:"¡{clients} cliente(s) cerrado(s)! ¡Escala! 🔥",
+  cMot1:"La disciplina vence a la motivación, {name}.",cMot2:"Pequeños pasos cada día construyen una nueva vida.",cMot3:"Tu yo futuro está mirando. Hazlo orgulloso. 💪",
+  cMot4:"{name}, la moto espera. Cada quest es un paso más. ⚡",cMot5:"Un cliente cierra todo, {name}. Sigue llamando. 📞",
+  cStat:"Nivel {lvl} · {total} misiones · mejor racha {best} días. Orgulloso de ti, {name}. 📈",cStatBiz:" Negocio: {clients} clientes, {demos} demos, ${revenue}.",
+  cNextFinish:"¡Termina {n} misión(es) hoy! ✅",cNextLow:"Entrena {stat}. 🎯",cNextAdd:"Añade una tarea abajo. 👇",
+  bizTitle:"Rastreador de Negocio",bizSub:"Sigue tu agencia de AI",bizDemos:"Demos",bizClients:"Clientes",bizCalls:"Llamadas",bizRevenue:"Ingresos",
+  bizAddDemo:"+ Demo",bizAddClient:"+ Cliente",bizAddCalls:"+ 25 Llam.",bizAddRevenue:"Registrar $",bizRevInput:"Cantidad ej. 2997",
+  bossTitle:"Jefes del Verano",bossSub:"Tus 4 grandes metas de este verano.",bossDefeated:"¡DERROTADO!",bossDefeat:"⚔️ DERROTAR",
+  b1_name:"Primer Demo",b1_desc:"Reserva tu primer demo",b1_reward:"Reinversión → sitio web",
+  b2_name:"Primer Cliente",b2_desc:"Cierra tu primer cliente — $2,997+",b2_reward:"Dinero real 💸",
+  b3_name:"3 Clientes",b3_desc:"Cierra 3 clientes",b3_reward:"Fondo para la moto 🏍️",
+  b4_name:"Academia de Fútbol",b4_desc:"Entra en una academia top",b4_reward:"Talaria / Surron E-Bike ⚡",
+  n_demo:"¡Demo reservado! +{xp} XP 🎯",n_client:"¡CLIENTE CERRADO! +{xp} XP +{coins} L 💰🔥",
+  n_calls:"¡25 llamadas! +{xp} XP 📞",n_revenue:"${amount} registrado! 💸",n_boss:"¡JEFE DERROTADO: {name}! 🏆",
+  schedTitle:"Horario de hoy",schedSub:"Tu rutina Lock-In. Verde = ahora.",schedNow:"AHORA",
+  questsSub:"Marca las tareas que completaste hoy. Cada misión = XP + monedas + stat.",
+  hintQuests:"<strong>Cómo funciona:</strong> Cada tarea real se convierte en una misión. Complétala → pulsa el botón → gana XP.",
+  hintBiz:"<strong>Cómo funciona:</strong> Cuando reserves un demo, cierres un cliente o hagas 25 llamadas — pulsa el botón.",
+  hintBoss:"<strong>¿Qué son los jefes?</strong> Tus 4 grandes metas. Cuando la alcanzas — el jefe es derrotado automáticamente.",
+  hintShop:"<strong>Cómo funciona:</strong> Gana monedas con misiones. Gástalas aquí en recompensas reales.",
+  hintStats:"<strong>Cómo crecen los stats:</strong> Cada stat crece con las misiones correspondientes. Máximo 500.",
+  tabHome:"Inicio",tabQuests:"Misiones",tabBiz:"Negocio",tabShop:"Tienda",tabProfile:"Perfil",
+  shopSub:"Gasta tus monedas en recompensas reales.",profileSub:"Tus stats y configuración.",langLabel:"Idioma",settingsTitle:"Ajustes"
+},
+de:{
+  appTitle:"Level Up dein Leben",appSubtitle:"Mach dein Leben zum Spiel",start:"Los geht's",
+  levelStats:"Level & Werte",level:"Level",xpProgress:"{cur} / {need} XP bis zum nächsten Level",
+  strength:"Stärke",agility:"Beweglichkeit",perception:"Wahrnehmung",stamina:"Ausdauer",intelligence:"Intelligenz",
+  dailyQuests:"Tägliche Quests",questPlaceholder:"Neue Quest",trains:"Trainiert",
+  difficulty:"Schwierigkeit",easy:"Leicht",medium:"Mittel",hard:"Schwer",add:"Hinzufügen",complete:"Erledigen ✓",doneBtn:"Fertig ✓",
+  noQuests:"Noch keine Quests",discipline:"Disziplin-Serie",disciplineDesc:"Erledige ALLE Quests jeden Tag.",
+  streakLabel:"Tage Serie",days:"Tage",disciplineGoal:"{n} / 14 Tage bis Diszipliniert",disciplineExpert:"Du bist diszipliniert! 🏆",
+  achievements:"Erfolge",locked:"Gesperrt",lvlShort:"Lvl",reach:"Level {n}",unlocked:"Freigeschaltet!",
+  rewardsShop:"Belohnungsshop",rewardsDesc:"Gib Münzen für echte Belohnungen aus.",
+  rewardPlaceholder:"Neue Belohnung",cost:"Preis",buy:"Kaufen",noRewards:"Noch keine Belohnungen",
+  activity:"Aktivität",noActivity:"Erledige eine Quest zum Starten!",
+  setName:"Name ändern",backup:"Backup",restore:"Laden",
+  hello:"Hallo",friend:"Freund",namePrompt:"Wie heißt du?",
+  n_levelup:"LEVEL UP! Jetzt Level {n} 🎉",n_quest:"Quest erledigt! +{xp} XP, +{coins} L",
+  n_allDone:"ALLE Quests erledigt! Serie +1 🔥",n_notEnough:"Nicht genug Münzen!",
+  n_bought:"Belohnung freigeschaltet! 🎁",n_questAdded:"Quest hinzugefügt 💪",n_rewardAdded:"Belohnung hinzugefügt 🎁",
+  ach1_t:"Erste Schritte",ach2_t:"Engagiert",ach3_t:"Krieger",ach4_t:"Elite",ach5_t:"Legende",
+  coachLabel:"dein Coach",coachNameDef:"Nova",coachNamePrompt:"Benenne deinen Coach:",
+  btnMotivate:"Motivier 💪",btnStatus:"Mein Status 📊",btnNext:"Was als Nächstes? 🎯",
+  journeyTitle:"Deine Reise",jSince:"Dabei seit",jTotal:"Quests erledigt",jBest:"Beste Serie",jActive:"Aktive Tage",jLockIn:"Lock-In Tag",
+  cMorning:"Guten Morgen, {name}! ☀️",cAfternoon:"Hey {name}! Los. 💪",cEvening:"Guten Abend, {name}! 🌙",
+  cAllDone:"Du hast ALLE Quests heute erledigt. Legendär. 🔥",cTodo:"Noch {n} Quest(s) heute.",cNoQuests:"Füge deine erste Quest unten hinzu. 👇",
+  cSugStreak:"Halte deine {n}-Tage-Serie!",cSugStart:"Erledige alle Quests heute.",
+  cSugLow:"Trainiere {stat} — schwächster Wert.",cSugCoins:"Du hast {coins} L — hol dir eine Belohnung! 🎁",
+  cSugBiz:"Buche heute ein Demo! 📞",cSugDemo:"Du hast {demos} Demos — schließ den Kunden ab! 💰",cSugClient:"{clients} Kunde(n)! Skaliere! 🔥",
+  cMot1:"Disziplin schlägt Motivation, {name}.",cMot2:"Kleine Schritte jeden Tag bauen ein neues Leben.",cMot3:"Dein zukünftiges Ich schaut zu. Mach es stolz. 💪",
+  cMot4:"{name}, das Bike wartet. Jede Quest bringt dich näher. ⚡",cMot5:"Ein Kunde ändert alles, {name}. Ruf an. 📞",
+  cStat:"Level {lvl} · {total} Quests · beste Serie {best} Tage. Stolz auf dich, {name}. 📈",cStatBiz:" Business: {clients} Kunden, {demos} Demos, ${revenue}.",
+  cNextFinish:"Erledige noch {n} Quest(s) heute! ✅",cNextLow:"Trainiere {stat}. 🎯",cNextAdd:"Füge eine Aufgabe hinzu. 👇",
+  bizTitle:"Business Tracker",bizSub:"Verfolge deine AI Agentur",bizDemos:"Demos",bizClients:"Kunden",bizCalls:"Anrufe",bizRevenue:"Einnahmen",
+  bizAddDemo:"+ Demo",bizAddClient:"+ Kunde",bizAddCalls:"+ 25 Anrufe",bizAddRevenue:"$ eintragen",bizRevInput:"Betrag z.B. 2997",
+  bossTitle:"Sommer-Bosse",bossSub:"Deine 4 Hauptziele für diesen Sommer.",bossDefeated:"BESIEGT!",bossDefeat:"⚔️ BESIEGEN",
+  b1_name:"Erstes Demo",b1_desc:"Buche dein erstes Demo",b1_reward:"Reinvestition → Website",
+  b2_name:"Erster Kunde",b2_desc:"Schließe deinen ersten Kunden — $2.997+",b2_reward:"Echtes Geld 💸",
+  b3_name:"3 Kunden",b3_desc:"Schließe 3 Kunden ab",b3_reward:"Bike-Fonds 🏍️",
+  b4_name:"Top-Akademie",b4_desc:"Werde in eine Top-Akademie aufgenommen",b4_reward:"Talaria / Surron E-Bike ⚡",
+  n_demo:"Demo gebucht! +{xp} XP 🎯",n_client:"KUNDE ABGESCHLOSSEN! +{xp} XP +{coins} L 💰🔥",
+  n_calls:"25 Anrufe! +{xp} XP 📞",n_revenue:"${amount} eingetragen! 💸",n_boss:"BOSS BESIEGT: {name}! 🏆",
+  schedTitle:"Heutiger Zeitplan",schedSub:"Dein Lock-In Tagesplan. Grün = jetzt.",schedNow:"JETZT",
+  questsSub:"Markiere erledigte Aufgaben. Jede Quest = XP + Münzen + Stat.",
+  hintQuests:"<strong>So funktioniert's:</strong> Jede echte Aufgabe wird zur Quest. Erledigt → Button drücken → XP bekommen.",
+  hintBiz:"<strong>So funktioniert's:</strong> Drücke die Buttons wenn du ein Demo buchst, einen Kunden abschließt oder 25 Anrufe machst.",
+  hintBoss:"<strong>Was sind Bosse?</strong> Deine 4 Hauptziele für den Sommer. Ziel erreicht — Boss automatisch besiegt.",
+  hintShop:"<strong>So funktioniert's:</strong> Verdiene Münzen mit Quests. Gib sie hier für echte Belohnungen aus.",
+  hintStats:"<strong>Wie Werte wachsen:</strong> Jeder Wert wächst durch passende Quests. Maximum 500.",
+  tabHome:"Zuhause",tabQuests:"Quests",tabBiz:"Business",tabShop:"Shop",tabProfile:"Profil",
+  shopSub:"Gib deine Münzen für echte Belohnungen aus.",profileSub:"Deine Stats und Einstellungen.",langLabel:"Sprache",settingsTitle:"Einstellungen"
+}
+};
+
+function t(key,vars){
+  let s=(LANG[state.lang]&&LANG[state.lang][key])||LANG.en[key]||key;
+  if(vars) for(const k in vars) s=s.replace('{'+k+'}',vars[k]);
+  return s;
+}
+
+/* ── STATE ── */
+let state=load();
+let currentTab='home';
+
+/* ── UPGRADE: sound + session vars ── */
+let sessionXP=0,sessionCoins=0;
+let soundEnabled=localStorage.getItem('soundMuted')!=='1';
+let audioCtx=null;
+function getAC(){if(!audioCtx){try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){return null;}}return audioCtx;}
+function playSound(type){
+  if(!soundEnabled)return;const ac=getAC();if(!ac)return;const now=ac.currentTime;
+  if(type==='quest'){[523,659,784].forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.28,now+i*.08);g.gain.exponentialRampToValueAtTime(.001,now+i*.08+.35);o.connect(g);g.connect(ac.destination);o.start(now+i*.08);o.stop(now+i*.08+.35);});}
+  else if(type==='levelup'){[523,659,784,1047].forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.type='square';o.frequency.value=f;g.gain.setValueAtTime(.18,now+i*.18);g.gain.exponentialRampToValueAtTime(.001,now+i*.18+.45);o.connect(g);g.connect(ac.destination);o.start(now+i*.18);o.stop(now+i*.18+.45);});}
+  else if(type==='buy'){[880,1100,1320,1760].forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.22,now+i*.06);g.gain.exponentialRampToValueAtTime(.001,now+i*.06+.18);o.connect(g);g.connect(ac.destination);o.start(now+i*.06);o.stop(now+i*.06+.18);});}
+  else if(type==='streak'){const o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.setValueAtTime(80,now);o.frequency.exponentialRampToValueAtTime(40,now+.6);g.gain.setValueAtTime(.5,now);g.gain.exponentialRampToValueAtTime(.001,now+.6);o.connect(g);g.connect(ac.destination);o.start(now);o.stop(now+.6);}
+}
+function toggleMute(){soundEnabled=!soundEnabled;localStorage.setItem('soundMuted',soundEnabled?'0':'1');const btn=document.getElementById('muteBtn');if(btn)btn.textContent=soundEnabled?'🔊':'🔇';}
+
+/* ── UPGRADE: float text + screen flash ── */
+function floatUp(text,x,y,color){const el=document.createElement('div');el.className='float-text';el.textContent=text;el.style.cssText='left:'+x+'px;top:'+y+'px;color:'+color+';';document.body.appendChild(el);setTimeout(()=>el.remove(),1500);}
+function screenFlash(){const el=document.createElement('div');el.className='screen-flash';document.body.appendChild(el);setTimeout(()=>el.remove(),600);}
+
+/* ── UPGRADE: onboarding ── */
+function showOnboarding(){
+  const ob=document.createElement('div');ob.id='onboarding';
+  const daysLeft=Math.max(0,Math.ceil((new Date('2026-07-01')-new Date())/(864e5)));
+  ob.innerHTML='<div class="ob-fire">🔥</div><div class="ob-title">LOCK IN<br>SUMMER 2026</div><div class="ob-sub">Любомире, це твоє літо.<br>62 дні. Один вибір.</div><div class="ob-date">⏳ Старт: 1 липня 2026'+(daysLeft>0?' · ще '+daysLeft+' дн.':' · СЬОГОДНІ!')+'</div><button class="ob-btn" onclick="closeOnboarding()">ПОЧАТИ ГРУ ⚔️</button>';
+  document.body.appendChild(ob);
+}
+function closeOnboarding(){localStorage.setItem('onboardingDone','1');const ob=document.getElementById('onboarding');if(ob){ob.style.opacity='0';ob.style.transition='opacity .5s';setTimeout(()=>{ob.remove();render();},500);}}
+
+/* ── UPGRADE: confetti + daily summary ── */
+function launchConfetti(){const cols=['#ffd700','#ff8a00','#00c9ff','#ff3b5c','#00c853','#92fe9d'];for(let i=0;i<60;i++)setTimeout(()=>{const c=document.createElement('div');c.className='confetti-piece';c.style.left=Math.random()*100+'vw';c.style.background=cols[Math.floor(Math.random()*cols.length)];c.style.animationDuration=(1.5+Math.random()*2)+'s';document.body.appendChild(c);setTimeout(()=>c.remove(),4000);},i*30);}
+function showDailySummary(){
+  const st=streak();
+  const msg=st>=14?'ЛЕГЕНДА ⚡':st>=7?'Ти в зоні 🔥':st>=3?'На вірному шляху 🚀':'Добрий початок 💪';
+  const dateStr=new Date().toLocaleDateString('uk-UA',{day:'numeric',month:'long'});
+  const el=document.createElement('div');el.id='dailySummary';
+  el.innerHTML='<div class="ds-icon">🏆</div><div class="ds-title">День завершено!</div><div class="ds-date">'+dateStr+'</div>'
+    +'<div class="ds-stats"><div class="ds-stat"><div class="dsv">+'+sessionXP+'</div><div class="dsl">XP сьогодні</div></div>'
+    +'<div class="ds-stat"><div class="dsv">+'+sessionCoins+'</div><div class="dsl">Монет</div></div>'
+    +'<div class="ds-stat"><div class="dsv">'+state.quests.length+'</div><div class="dsl">Квести</div></div>'
+    +'<div class="ds-stat"><div class="dsv">'+st+'</div><div class="dsl">Серія 🔥</div></div></div>'
+    +'<div class="ds-msg">'+msg+'</div>'
+    +'<button class="ds-close" onclick="closeDailySummary()">Продовжити 🗡️</button>';
+  document.body.appendChild(el);launchConfetti();playSound('streak');
+}
+function closeDailySummary(){const el=document.getElementById('dailySummary');if(el){el.style.opacity='0';el.style.transition='opacity .4s';setTimeout(()=>el.remove(),400);}}
+
+/* ── UPGRADE: bike celebration ── */
+function showBikeCelebration(){
+  if(state.bikeCelebrated)return;state.bikeCelebrated=true;save();
+  const el=document.createElement('div');el.id='bikeCelebration';
+  el.style.cssText='position:fixed;inset:0;z-index:950;background:rgba(5,5,15,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;backdrop-filter:blur(12px);';
+  el.innerHTML='<div style="font-size:4rem;margin-bottom:16px;animation:obPulse 1s infinite;">🏍️⚡</div>'
+    +'<div style="font-size:2.2rem;font-weight:900;background:linear-gradient(90deg,#ffd700,#ff8a00);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:12px;">БАЙК ТВІЙ!</div>'
+    +'<div style="color:var(--muted);font-size:1rem;max-width:280px;line-height:1.6;margin-bottom:28px;">Ти заробив $5,000 цього літа.<br>Talaria / Surron чекає на тебе. 🔥</div>'
+    +'<button style="background:linear-gradient(90deg,#ffd700,#ff8a00);color:#050500;border:none;border-radius:14px;padding:16px 36px;font-size:1.1rem;font-weight:900;cursor:pointer;" onclick="this.parentElement.remove()">LET\'S GO! 🚀</button>';
+  document.body.appendChild(el);launchConfetti();playSound('streak');
+}
+
+function blank(){
+  return{
+    name:'Любомир',lang:'uk',level:1,xp:0,coins:0,
+    stats:{strength:0,agility:0,perception:0,stamina:0,intelligence:0},
+    quests:[
+      {id:uid(),name:'Тренування 3 год ⚽',stat:'strength',xp:40,gain:20,coins:20,doneToday:false,lastDone:''},
+      {id:uid(),name:'Бізнес-блок 4 год 💼',stat:'intelligence',xp:40,gain:20,coins:20,doneToday:false,lastDone:''},
+      {id:uid(),name:'Cold Calling / Follow-up 📞',stat:'agility',xp:25,gain:10,coins:10,doneToday:false,lastDone:''},
+      {id:uid(),name:'Recovery — роллер / чоботи 🦵',stat:'stamina',xp:10,gain:5,coins:5,doneToday:false,lastDone:''},
+      {id:uid(),name:'Ліг спати до 23:00 😴',stat:'stamina',xp:10,gain:5,coins:5,doneToday:false,lastDone:''}
+    ],
+    rewards:[
+      {id:uid(),name:'Talaria / Surron Electric Bike 🏍️⚡',cost:500},
+      {id:uid(),name:'1 година ігор 🎮',cost:30},
+      {id:uid(),name:'Замовити улюблену їжу 🍕',cost:50},
+      {id:uid(),name:'Заслужений вихідний 😴',cost:100}
+    ],
+    allDoneDates:{},lastResetDate:'',log:[],
+    coachName:'',startDate:'',bestStreak:0,totalQuestsDone:0,totalCoinsEarned:0,activeDays:{},
+    businessStats:{demos:0,clients:0,calls:0,revenue:0},
+    bossesDefeated:[],
+    bikeCelebrated:false,summaryShownDate:''
+  };
+}
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY));return d||blank();}catch(e){return blank();}}
+function normalize(){
+  const b=blank();
+  for(const k in b){if(state[k]===undefined)state[k]=b[k];}
+  if(!state.startDate)state.startDate=today();
+  ['bestStreak','totalQuestsDone','totalCoinsEarned'].forEach(k=>{if(typeof state[k]!=='number')state[k]=0;});
+  if(!state.activeDays)state.activeDays={};
+  if(!state.stats)state.stats=b.stats;
+  if(!state.businessStats)state.businessStats={demos:0,clients:0,calls:0,revenue:0};
+  if(!state.bossesDefeated)state.bossesDefeated=[];
+  if(state.bikeCelebrated===undefined)state.bikeCelebrated=false;
+  if(state.summaryShownDate===undefined)state.summaryShownDate='';
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+/* ── DATES ── */
+function fmt(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function today(){return fmt(new Date());}
+function dailyReset(){
+  if(state.lastResetDate!==today()){
+    state.quests.forEach(q=>q.doneToday=false);
+    state.lastResetDate=today();save();
+  }
+}
+function streak(){
+  let c=0,d=new Date();
+  const has=x=>state.allDoneDates[fmt(x)];
+  if(!has(d))d.setDate(d.getDate()-1);
+  while(has(d)){c++;d.setDate(d.getDate()-1);}
+  return c;
+}
+function lockInDay(){
+  const start=new Date('2026-07-01'),now=new Date();
+  const diff=Math.floor((now-start)/(864e5))+1;
+  return diff<1?0:Math.min(diff,62);
+}
+function currentScheduleIdx(){
+  const now=new Date(),h=now.getHours(),m=now.getMinutes(),mins=h*60+m;
+  for(let i=0;i<SCHEDULE.length;i++){
+    const s=SCHEDULE[i];
+    if(mins>=s.h*60+s.m&&mins<=s.end*60+s.em)return i;
+  }
+  return -1;
+}
+
+/* ── GAME LOGIC ── */
+function xpNeed(L){return 100+(L-1)*40;}
+function addXP(amount){
+  state.xp+=amount;let need=xpNeed(state.level);
+  while(state.xp>=need){state.xp-=need;state.level++;notify(t('n_levelup',{n:state.level}),'success');playSound('levelup');addLog('🎉 '+t('n_levelup',{n:state.level}));need=xpNeed(state.level);}
+}
+function completeQuest(id,ev){
+  const q=state.quests.find(x=>x.id===id);if(!q||q.doneToday)return;
+  if(ev){
+    const btn=ev.target;const rect=btn.getBoundingClientRect();
+    const cx=rect.left+rect.width/2,cy=rect.top;
+    floatUp('+'+q.xp+' XP ⚡',cx,cy,'#ffd700');
+    setTimeout(()=>floatUp('+'+q.coins+' 🪙',cx+20,cy+10,'#00c9ff'),200);
+    screenFlash();
+    const card=btn.closest('.quest');
+    if(card){card.classList.add('quest-bounce');setTimeout(()=>card.classList.remove('quest-bounce'),400);}
+    playSound('quest');
+  }
+  q.doneToday=true;q.lastDone=today();
+  addXP(q.xp);state.coins+=q.coins;
+  sessionXP+=q.xp;sessionCoins+=q.coins;
+  state.stats[q.stat]=Math.min(500,(state.stats[q.stat]||0)+q.gain);
+  state.totalQuestsDone=(state.totalQuestsDone||0)+1;
+  state.totalCoinsEarned=(state.totalCoinsEarned||0)+q.coins;
+  state.activeDays[today()]=true;
+  notify(t('n_quest',{xp:q.xp,coins:q.coins}),'success');
+  addLog('✅ '+esc(q.name)+'  (+'+q.xp+' XP, +'+q.coins+' L)');
+  const allDone=state.quests.length>0&&state.quests.every(x=>x.doneToday);
+  if(allDone&&!state.allDoneDates[today()]){
+    state.allDoneDates[today()]=true;notify(t('n_allDone'),'success');addLog('🔥 '+t('n_allDone'));
+  }
+  const s=streak();if(s>(state.bestStreak||0))state.bestStreak=s;
+  save();render();
+  if(allDone&&state.summaryShownDate!==today()){
+    state.summaryShownDate=today();save();
+    setTimeout(()=>showDailySummary(),1200);
+  }
+}
+function addQuest(){
+  const name=document.getElementById('qName').value.trim();if(!name)return;
+  const stat=document.getElementById('qStat').value,diff=document.getElementById('qDiff').value,r=DIFF[diff];
+  state.quests.push({id:uid(),name,stat,xp:r.xp,gain:r.gain,coins:r.coins,doneToday:false,lastDone:''});
+  notify(t('n_questAdded'),'success');save();render();
+}
+function delQuest(id){state.quests=state.quests.filter(x=>x.id!==id);save();render();}
+function addReward(){
+  const name=document.getElementById('rName').value.trim();
+  let cost=parseInt(document.getElementById('rCost').value,10);
+  if(!name)return;if(isNaN(cost)||cost<0)cost=10;
+  state.rewards.push({id:uid(),name,cost});notify(t('n_rewardAdded'),'success');save();render();
+}
+function buyReward(id){
+  const r=state.rewards.find(x=>x.id===id);if(!r)return;
+  if(state.coins>=r.cost){state.coins-=r.cost;notify(t('n_bought'),'success');playSound('buy');addLog('🎁 '+esc(r.name)+'  (-'+r.cost+' L)');save();render();}
+  else notify(t('n_notEnough'),'danger');
+}
+function delReward(id){state.rewards=state.rewards.filter(x=>x.id!==id);save();render();}
+function addLog(text){
+  state.log.unshift({text,time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
+  state.log=state.log.slice(0,30);
+}
+
+/* ── BUSINESS ── */
+function logBiz(type){
+  const bs=state.businessStats;
+  if(type==='demos'){bs.demos++;addXP(25);state.coins+=20;notify(t('n_demo',{xp:25}),'success');addLog('🎯 Демо #'+bs.demos);}
+  else if(type==='clients'){bs.clients++;addXP(100);state.coins+=100;notify(t('n_client',{xp:100,coins:100}),'gold');addLog('💰 КЛІЄНТ #'+bs.clients+' — BEAST! 🔥');}
+  else if(type==='calls'){bs.calls+=25;addXP(10);state.coins+=5;notify(t('n_calls',{xp:10}),'success');addLog('📞 +25 дзвінків (всього: '+bs.calls+')');}
+  checkBosses();save();render();
+}
+function logRevenue(){
+  const inp=document.getElementById('revInput');if(!inp)return;
+  const amt=parseFloat(inp.value);
+  if(isNaN(amt)||amt<=0){notify('Введи суму!','danger');return;}
+  state.businessStats.revenue=(state.businessStats.revenue||0)+amt;
+  if(state.businessStats.revenue>=5000&&!state.bikeCelebrated)setTimeout(()=>showBikeCelebration(),500);
+  notify(t('n_revenue',{amount:amt.toLocaleString()}),'gold');
+  addLog('💸 +$'+amt.toLocaleString()+' (всього: $'+state.businessStats.revenue.toLocaleString()+')');
+  inp.value='';save();render();
+}
+function checkBosses(){
+  const bs=state.businessStats;
+  BOSSES.forEach(b=>{
+    if((state.bossesDefeated||[]).includes(b.key))return;
+    if(b.trigger==='demos'&&bs.demos>=b.val)defeatBoss(b.key,false);
+    if(b.trigger==='clients'&&bs.clients>=b.val)defeatBoss(b.key,false);
+  });
+}
+function defeatBoss(key,doRender){
+  if((state.bossesDefeated||[]).includes(key))return;
+  state.bossesDefeated.push(key);
+  const b=BOSSES.find(x=>x.key===key);if(!b)return;
+  addXP(50);state.coins+=50;
+  notify(t('n_boss',{name:t(key+'_name')}),'gold');
+  addLog('🏆 БОС: '+t(key+'_name'));
+  if(doRender){save();render();}
+}
+
+/* ── SETTINGS ── */
+function setLang(v){state.lang=v;document.documentElement.lang=v;save();render();}
+function setName(){const n=prompt(t('namePrompt'),state.name||'');if(n!==null){state.name=n.trim();save();render();}}
+function backup(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='level-up-backup.json';a.click();
+}
+function restore(){
+  const inp=document.createElement('input');inp.type='file';inp.accept='.json';
+  inp.onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();
+    rd.onload=()=>{try{state=JSON.parse(rd.result);normalize();save();render();}catch{alert('Could not read file.');}};
+    rd.readAsText(f);};
+  inp.click();
+}
+function notify(msg,type){
+  const box=document.getElementById('notifs');
+  const d=document.createElement('div');d.className='notif '+(type||'');d.textContent=msg;box.appendChild(d);
+  setTimeout(()=>d.remove(),3600);
+}
+function switchTab(tab){currentTab=tab;window.scrollTo(0,0);render();}
+function scrollToQuests(){switchTab('quests');}
+
+/* ── COACH ── */
+function coachName(){return state.coachName||t('coachNameDef');}
+function rawName(){return state.name||t('friend');}
+function lowestStat(){let lo=STATS[0];STATS.forEach(s=>{if((state.stats[s]||0)<(state.stats[lo]||0))lo=s;});return lo;}
+function coachGreeting(){
+  const h=new Date().getHours(),name=rawName();
+  if(h<12)return t('cMorning',{name});if(h<18)return t('cAfternoon',{name});return t('cEvening',{name});
+}
+function coachContext(){
+  if(!state.quests.length)return t('cNoQuests');
+  const left=state.quests.filter(q=>!q.doneToday).length;
+  return left===0?t('cAllDone'):t('cTodo',{n:left});
+}
+function coachSuggestion(){
+  const st=streak();
+  const bs=state.businessStats||{demos:0,clients:0};
+  const cheapest=state.rewards.length?Math.min.apply(null,state.rewards.map(r=>r.cost)):30;
+  if(bs.clients>=3)return t('cSugClient',{clients:bs.clients});
+  if(bs.clients>0)return t('cSugClient',{clients:bs.clients});
+  if(bs.demos>0&&bs.clients===0)return t('cSugDemo',{demos:bs.demos});
+  if(bs.demos===0)return t('cSugBiz');
+  if(state.rewards.length&&state.coins>=cheapest)return t('cSugCoins',{coins:state.coins});
+  if(st>0)return t('cSugStreak',{n:st});
+  return t('cSugLow',{stat:t(lowestStat())});
+}
+function defaultCoachMsg(){return coachGreeting()+' '+coachContext()+' '+coachSuggestion();}
+function coachAct(kind){
+  let msg='';const name=rawName();
+  const bs=state.businessStats||{demos:0,clients:0,calls:0,revenue:0};
+  if(kind==='motivate'){
+    const a=[t('cMot1',{name}),t('cMot2',{name}),t('cMot3',{name}),t('cMot4',{name}),t('cMot5',{name})];
+    msg=a[Math.floor(Math.random()*a.length)];
+  }else if(kind==='status'){
+    msg=t('cStat',{lvl:state.level,total:state.totalQuestsDone||0,best:state.bestStreak||0,name});
+    if(bs.clients>0||bs.demos>0||bs.revenue>0)msg+=t('cStatBiz',{clients:bs.clients,demos:bs.demos,revenue:(bs.revenue||0).toLocaleString()});
+  }else if(kind==='next'){
+    const left=state.quests.filter(q=>!q.doneToday).length;
+    if(!state.quests.length)msg=t('cNextAdd');
+    else if(left>0)msg=t('cNextFinish',{n:left});
+    else msg=t('cNextLow',{stat:t(lowestStat())});
+  }
+  const el=document.getElementById('coachSpeech');if(el)el.textContent=msg;
+}
+function renameCoach(){const n=prompt(t('coachNamePrompt'),coachName());if(n!==null){state.coachName=n.trim();save();render();}}
+
+/* ── RENDER HELPERS ── */
+function statCardH(s){
+  const v=state.stats[s]||0,pct=v/500*100;
+  return`<div class="stat-card s-${s}">
+    <div class="si">${STAT_ICON[s]}</div>
+    <div class="sn">${t(s)}</div>
+    <div class="sv">${v}<span style="font-size:.7rem;color:var(--muted);font-weight:500;"> /500</span></div>
+    <div class="sbar"><i style="width:${pct}%"></i></div>
+  </div>`;
+}
+function questCardH(q){
+  const done=q.doneToday;
+  return`<div class="quest ${done?'done':''}">
+    <button class="xdel" onclick="delQuest('${q.id}')">×</button>
+    <div class="qt">${esc(q.name)}</div>
+    <div class="qd">${STAT_ICON[q.stat]} ${t(q.stat)} · ${t('trains').toLowerCase()}</div>
+    <div class="qr">+${q.xp} XP &nbsp;·&nbsp; +${q.coins} 🪙 &nbsp;·&nbsp; +${q.gain} ${t(q.stat)}</div>
+    <button class="qbtn ${done?'done':''}" ${done?'disabled':''} onclick="completeQuest('${q.id}',event)">${done?t('doneBtn'):t('complete')}</button>
+  </div>`;
+}
+function achCardH(a){
+  const unlocked=state.level>=a.lvl;
+  return`<div class="ach ${unlocked?'':'locked'}">
+    <div class="ach-badge ${unlocked?'unlocked':'locked'}">${unlocked?t('unlocked'):a.lvl+' '+t('lvlShort')}</div>
+    <div class="ai">${a.icon}</div>
+    <div class="at">${t(a.key+'_t')}</div>
+    <div class="ad">${t('reach',{n:a.lvl})}</div>
+  </div>`;
+}
+function bossCardH(b){
+  const defeated=(state.bossesDefeated||[]).includes(b.key);
+  const bs=state.businessStats||{demos:0,clients:0};
+  const prog=b.trigger==='demos'?bs.demos:b.trigger==='clients'?bs.clients:0;
+  const ready=b.trigger!=='manual'&&prog>=b.val;
+  return`<div class="boss ${defeated?'defeated':(ready?'ready':'')}">
+    ${defeated?`<div class="boss-beat-badge">${t('bossDefeated')}</div>`:''}
+    <div class="boss-top">
+      <div class="boss-icon">${b.icon}</div>
+      <div class="boss-info">
+        <div class="boss-name">${t(b.key+'_name')}</div>
+        <div class="boss-desc">${t(b.key+'_desc')}</div>
+      </div>
+    </div>
+    <div class="boss-reward">🏆 ${t(b.key+'_reward')}</div>
+    ${!defeated&&b.trigger!=='manual'&&!ready?`<div class="boss-prog">Прогрес: ${prog} / ${b.val}</div>`:''}
+    ${!defeated&&(ready||b.trigger==='manual')?`<button class="boss-btn${b.trigger==='manual'?' manual':''}" onclick="defeatBoss('${b.key}',true);save();render();">${t('bossDefeat')}</button>`:''}
+  </div>`;
+}
+
+/* ── TAB RENDERS ── */
+function renderHome(){
+  const st=streak(),discPct=Math.min(100,st/14*100);
+  const done=state.quests.filter(q=>q.doneToday).length,total=state.quests.length;
+  const pct=total?Math.round(done/total*100):0;
+  const curSched=currentScheduleIdx();
+  const lockDay=lockInDay();
+  return`
+    <div class="streak-hero">
+      <div class="sh-fire">🔥</div>
+      <div class="sh-num">${st}</div>
+      <div class="sh-label">${t('streakLabel')}</div>
+      <div class="sh-sub">${st>=14?t('disciplineExpert'):(14-st)+' '+t('days')+' → '+t('disciplineExpert').split('!')[0]}</div>
+    </div>
+
+    <div class="today-card">
+      <div class="tc-top">
+        <div>
+          <div class="tc-label">Сьогодні виконано</div>
+          <div class="tc-num">${done}<span> / ${total}</span></div>
+        </div>
+        <div style="font-size:1.4rem;font-weight:800;color:${pct===100?'var(--success)':'var(--accent)'};">${pct}%</div>
+      </div>
+      <div class="tc-bar"><i style="width:${pct}%"></i></div>
+      <div class="tc-cta" style="color:${pct===100?'var(--success)':'var(--muted)'}">
+        ${pct===100?'Усі квести виконано сьогодні! 🔥':'Перейди на вкладку ⚔️ і відміть виконані квести'}
+      </div>
+    </div>
+
+    <section class="section coach">
+      <div class="coach-head">
+        <div class="coach-av" onclick="renameCoach()">🧠</div>
+        <div>
+          <div class="coach-name">${esc(coachName())}</div>
+          <div class="coach-name"><small>${t('coachLabel')} · натисни щоб перейменувати</small></div>
+        </div>
+      </div>
+      <div class="coach-bubble"><span id="coachSpeech"></span></div>
+      <div class="coach-btns">
+        <button onclick="coachAct('motivate')">${t('btnMotivate')}</button>
+        <button onclick="coachAct('status')">${t('btnStatus')}</button>
+        <button onclick="coachAct('next')">${t('btnNext')}</button>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">${t('schedTitle')}</div>
+      <div class="section-sub">${t('schedSub')}</div>
+      <div class="sched">
+        ${SCHEDULE.map((s,i)=>{
+          const isNow=i===curSched,isPast=curSched>i&&i!==curSched;
+          return`<div class="schedrow ${isNow?'active':''} ${isPast?'past':''}">
+            <div class="sched-time">${s.time}${isNow?`<span class="now-badge">${t('schedNow')}</span>`:''}</div>
+            <div class="sched-block">${s.block}</div>
+            <div class="sched-icon">${s.icon}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </section>
+
+    ${lockDay>0?`<div style="text-align:center;padding:12px;color:var(--warning);font-size:.85rem;font-weight:700;">🔒 Lock-In День ${lockDay} з 62</div>`:'<div style="text-align:center;padding:12px;color:var(--muted);font-size:.8rem;">🔒 Lock-In стартує 1 липня 2026</div>'}
+  `;
+}
+
+function renderQuests(){
+  const done=state.quests.filter(q=>q.doneToday).length,total=state.quests.length;
+  return`
+    <div class="section-title" style="margin-bottom:4px;">${t('dailyQuests')}</div>
+    <div class="section-sub">${t('questsSub')}</div>
+    <div class="hint">${t('hintQuests')}</div>
+
+    ${total>0?`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <span style="font-size:.82rem;color:var(--muted);">Виконано сьогодні</span>
+      <span style="font-weight:800;color:${done===total?'var(--success)':'var(--accent)'};">${done} / ${total}</span>
+    </div>`:''}
+
+    <div class="quests">
+      ${state.quests.length?state.quests.map(questCardH).join(''):`
+        <div class="empty-state">
+          <div class="es-icon">⚔️</div>
+          <div class="es-title">Квестів ще немає</div>
+          <div class="es-text">Додай свої реальні щоденні справи нижче.<br>Наприклад: тренування, бізнес-блок, дзвінки.</div>
+        </div>`}
+    </div>
+
+    <div class="section" style="margin-top:14px;">
+      <div class="section-title">Додати квест</div>
+      <div class="section-sub">Напиши назву → вибери характеристику → вибери складність → натисни Додати</div>
+      <div class="addrow">
+        <input type="text" id="qName" placeholder="${t('questPlaceholder')}">
+        <select id="qStat">${STATS.map(s=>`<option value="${s}">${STAT_ICON[s]} ${t(s)}</option>`).join('')}</select>
+        <select id="qDiff">
+          <option value="easy">${t('easy')} (+10 XP)</option>
+          <option value="medium" selected>${t('medium')} (+25 XP)</option>
+          <option value="hard">${t('hard')} (+40 XP)</option>
+        </select>
+        <button class="addbtn" onclick="addQuest()">+ ${t('add')}</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderBusiness(){
+  const bs=state.businessStats||{demos:0,clients:0,calls:0,revenue:0};
+  return`
+    <div class="section-title" style="margin-bottom:4px;">${t('bizTitle')}</div>
+    <div class="section-sub">${t('bizSub')}</div>
+    <div class="hint">${t('hintBiz')}</div>
+
+    <div class="revenue-hero">
+      <div class="rh-amount">$${(bs.revenue||0).toLocaleString()}</div>
+      <div class="rh-label">Загальний дохід цього літа 💸</div>
+    </div>
+
+    ${(()=>{
+      const rev=bs.revenue||0,goal=5000,pct=Math.min(100,rev/goal*100);
+      const pctStr=pct.toFixed(1);
+      let ms='';
+      if(rev>=5000)ms='100% — БАЙК ТВІЙ! 🏍️⚡';
+      else if(rev>=2500)ms='50% — Половина шляху 🔥';
+      else if(rev>=1000)ms='20% — Реінвест у вебсайт ✅';
+      return`<div class="bike-bar-wrap">
+        <div class="bike-bar-title">🏍️ Talaria / Surron — ціль $5,000</div>
+        <div class="bike-bar-track">
+          <div class="bike-bar-fill" style="width:${pctStr}%">${pct>3?'<div class="bike-bar-glow"></div>':''}</div>
+        </div>
+        <div class="bike-bar-info"><span>$${rev.toLocaleString()} зароблено</span><span>${pctStr}% · ще $${Math.max(0,goal-rev).toLocaleString()}</span></div>
+        ${ms?`<div class="bike-bar-milestone">${ms}</div>`:''}
+      </div>`;
+    })()}
+
+    <div class="biz-cards">
+      <div class="bizcard">
+        <div class="bv">${bs.demos}</div>
+        <div class="bl">${t('bizDemos')}</div>
+        <button class="badd" onclick="logBiz('demos')">${t('bizAddDemo')}</button>
+      </div>
+      <div class="bizcard">
+        <div class="bv">${bs.clients}</div>
+        <div class="bl">${t('bizClients')}</div>
+        <button class="badd" onclick="logBiz('clients')">${t('bizAddClient')}</button>
+      </div>
+      <div class="bizcard">
+        <div class="bv">${bs.calls}</div>
+        <div class="bl">${t('bizCalls')}</div>
+        <button class="badd" onclick="logBiz('calls')">${t('bizAddCalls')}</button>
+      </div>
+    </div>
+
+    <div class="section" style="margin-bottom:14px;">
+      <div class="section-title">Записати дохід 💸</div>
+      <div class="section-sub">Закрив клієнта? Введи суму яку отримав і натисни кнопку.</div>
+      <div class="rev-row">
+        <input type="number" id="revInput" placeholder="${t('bizRevInput')}" min="0">
+        <button onclick="logRevenue()">${t('bizAddRevenue')}</button>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-bottom:4px;">${t('bossTitle')}</div>
+    <div class="section-sub">${t('bossSub')}</div>
+    <div class="hint">${t('hintBoss')}</div>
+    <div class="bosses">
+      ${BOSSES.map(bossCardH).join('')}
+    </div>
+  `;
+}
+
+function renderShop(){
+  return`
+    <div class="section-title" style="margin-bottom:4px;">${t('rewardsShop')}</div>
+    <div class="section-sub">${t('shopSub')}</div>
+    <div class="hint">${t('hintShop')}</div>
+
+    <div class="coins-hero">
+      <div class="ch-num">🪙 ${state.coins}</div>
+      <div class="ch-label">Твій баланс монет</div>
+    </div>
+
+    <div class="rewards-grid">
+      ${state.rewards.length?state.rewards.map(r=>`
+        <div class="reward-card">
+          <button class="xdel" onclick="delReward('${r.id}')" style="position:absolute;top:10px;right:10px;">×</button>
+          <div class="ri">🎁</div>
+          <div class="rinfo">
+            <div class="rname">${esc(r.name)}</div>
+            <div class="rprice">🪙 ${r.cost} монет</div>
+          </div>
+          <button class="rbuy" onclick="buyReward('${r.id}')" ${state.coins<r.cost?'style="opacity:.4;cursor:not-allowed;"':''}>${state.coins>=r.cost?t('buy'):'🔒'}</button>
+        </div>`).join(''):`
+        <div class="empty-state">
+          <div class="es-icon">🎁</div>
+          <div class="es-title">Нагород ще немає</div>
+          <div class="es-text">Додай реальні нагороди для себе нижче.<br>Наприклад: 1 год ігор = 30 монет.</div>
+        </div>`}
+    </div>
+
+    <div class="section" style="margin-top:14px;">
+      <div class="section-title">Додати нагороду</div>
+      <div class="section-sub">Напиши назву нагороди і скільки монет вона коштує</div>
+      <div class="addrow">
+        <input type="text" id="rName" placeholder="${t('rewardPlaceholder')}">
+        <input type="number" id="rCost" placeholder="${t('cost')} (монет)" min="0" style="max-width:130px;flex:0 0 130px;">
+        <button class="addbtn" onclick="addReward()">+ ${t('add')}</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderProfile(){
+  const need=xpNeed(state.level),xpPct=Math.min(100,state.xp/need*100);
+  const lockDay=lockInDay();
+  return`
+    <div class="profile-hero">
+      <div class="ph-av">⚽</div>
+      <div class="ph-name">${esc(state.name||t('friend'))}</div>
+      <div style="color:var(--muted);font-size:.8rem;margin-top:2px;">AI Receptionist Agency · Footballer</div>
+      <button class="ph-edit" onclick="setName()">✏️ ${t('setName')}</button>
+    </div>
+
+    <section class="section">
+      <div class="section-title">${t('level')} ${state.level}</div>
+      <div class="section-sub">${t('xpProgress',{cur:state.xp,need:need})}</div>
+      <div class="lvbar"><i style="width:${xpPct}%"></i></div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">${t('levelStats')}</div>
+      <div class="section-sub">${t('hintStats')}</div>
+      <div class="stats-grid">${STATS.map(statCardH).join('')}</div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">${t('journeyTitle')}</div>
+      <div class="journey">
+        <div class="jcard"><div class="jv">${state.startDate||today()}</div><div class="jl">${t('jSince')}</div></div>
+        <div class="jcard"><div class="jv">${state.totalQuestsDone||0}</div><div class="jl">${t('jTotal')}</div></div>
+        <div class="jcard"><div class="jv">${state.bestStreak||0}</div><div class="jl">${t('jBest')}</div></div>
+        <div class="jcard"><div class="jv">${Object.keys(state.activeDays||{}).length}</div><div class="jl">${t('jActive')}</div></div>
+        <div class="jcard"><div class="jv" style="color:${lockDay>0?'var(--gold)':'var(--muted)'};">${lockDay>0?lockDay:'−'}</div><div class="jl">${t('jLockIn')}</div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">${t('achievements')}</div>
+      <div class="section-sub">Розблоковуються коли досягаєш потрібного рівня</div>
+      <div class="achs">${ACHS.map(achCardH).join('')}</div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">${t('activity')}</div>
+      <div class="section-sub">Всі твої дії записуються тут</div>
+      <div class="log">${state.log.length?state.log.map(l=>`<div class="logitem"><span>${l.text}</span><span class="lt">${l.time}</span></div>`).join(''):`<div style="color:var(--muted);font-size:.82rem;padding:8px;">${t('noActivity')}</div>`}</div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">${t('settingsTitle')}</div>
+      <div class="settings-row">
+        <label>${t('langLabel')}</label>
+        <select onchange="setLang(this.value)">
+          <option value="uk" ${state.lang==='uk'?'selected':''}>🇺🇦 Українська</option>
+          <option value="en" ${state.lang==='en'?'selected':''}>🇬🇧 English</option>
+          <option value="ru" ${state.lang==='ru'?'selected':''}>🇷🇺 Русский</option>
+          <option value="es" ${state.lang==='es'?'selected':''}>🇪🇸 Español</option>
+          <option value="de" ${state.lang==='de'?'selected':''}>🇩🇪 Deutsch</option>
+        </select>
+        <div class="btn-row">
+          <button class="btn-outline" onclick="backup()">💾 ${t('backup')}</button>
+          <button class="btn-outline" onclick="restore()">📂 ${t('restore')}</button>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+/* ── MAIN RENDER ── */
+function render(){
+  const bs=state.businessStats||{};
+
+  // Header
+  document.getElementById('appHeader').innerHTML=`
+    <div class="app-brand">
+      <div class="logo">⚡</div>
+      <div class="app-name">Level Up Life</div>
+    </div>
+    <div class="header-right">
+      <button id="muteBtn" class="mute-btn" onclick="toggleMute()">${soundEnabled?'🔊':'🔇'}</button>
+      <div class="level-pill">${t('level')} ${state.level}</div>
+      <div class="coins-pill">🪙 ${state.coins}</div>
+    </div>`;
+
+  // Content
+  const tabs={home:renderHome,quests:renderQuests,business:renderBusiness,shop:renderShop,profile:renderProfile};
+  document.getElementById('app').innerHTML=(tabs[currentTab]||renderHome)();
+
+  // Bottom nav
+  const navItems=[
+    {id:'home',icon:'🏠',label:t('tabHome')},
+    {id:'quests',icon:'⚔️',label:t('tabQuests')},
+    {id:'business',icon:'💼',label:t('tabBiz')},
+    {id:'shop',icon:'🛒',label:t('tabShop')},
+    {id:'profile',icon:'👤',label:t('tabProfile')}
+  ];
+  document.getElementById('bottomNav').innerHTML=navItems.map(n=>`
+    <button class="nav-btn ${currentTab===n.id?'active':''}" onclick="switchTab('${n.id}')">
+      <span class="ni">${n.icon}</span>
+      <span>${n.label}</span>
+    </button>`).join('');
+
+  // Coach text
+  const cs=document.getElementById('coachSpeech');if(cs)cs.textContent=defaultCoachMsg();
+
+  // Enter keys
+  ['qName','rName'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.addEventListener('keydown',e=>{if(e.key==='Enter'){id==='qName'?addQuest():addReward();}});
+  });
+  const ri=document.getElementById('revInput');
+  if(ri)ri.addEventListener('keydown',e=>{if(e.key==='Enter')logRevenue();});
+}
+
+/* ── INIT ── */
+normalize();
+document.documentElement.lang=state.lang;
+dailyReset();
+const _s=streak();if(_s>(state.bestStreak||0))state.bestStreak=_s;
+save();
+if(!localStorage.getItem('onboardingDone')){showOnboarding();}else{render();}
+</script>
+</body>
+</html>
